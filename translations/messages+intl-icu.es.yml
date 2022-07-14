@@ -1,11 +1,13 @@
 #  Titles 
 title.appTitle: "Consigna"
 title.kutxa.uploadFile: "Subir fichero"
+title.sending: "Enviando"
 
 #  Forms
 upload.file: "Fichero"
 upload.senderEmail: "Email del emisor"
 upload.receiverEmail: "Email del receptor"
+upload.registrationNumber: "Número de registro"
 
 #  Buttons
 btn.send: "Enviar"
@@ -13,13 +15,13 @@ btn.send: "Enviar"
 #  Messages
 message.fileSaved: "El fichero se ha guardado correctamente"
 message.emailTextReceiver: "Le han enviado un fichero a través de consigna. Los datos del envío son los siguientes:"
-message.emailTextSender: |
-  <p>El fichero de gran tamaño enviado al Ayuntamiento de Amorebieta-Etxano ha llegado correctamente.</p>
-  <p>Si necesitas un registro oficial, realiza el trámite 'Procedimeintos generales - Instancia General' en la sede electrónica, <a href="https://e-udala.amorebieta-etxano.eus">https://e-udala.amorebieta-etxano.eus</a>, dando los siguientes datos:</p>
+message.emailTextSender: "<p>El fichero de gran tamaño enviado al Ayuntamiento de Amorebieta-Etxano ha llegado correctamente.</p>"
+message.emailTextSenderRow2: "<p>Para que tenga validez su registro se ha debido hacer anteriormente un trámite relacionado en la sede electrónica <a href=\"https://e-udala.amorebieta-etxano.eus\">https://e-udala.amorebieta-etxano.eus</a> con el número de registro {registrationNumber}</p>"
 message.emailSubjectReceiver: "Se te ha enviado un fichero a través de consigna"
 message.emailSubjectSender: "Su fichero se ha guardado en la consigna"
 message.downloadURL: "Fichero enviado al Ayuntamiento de Amorebieta-Etxano a través de la aplicación Kutxa, "
 message.theFileBeDeletedIn15days: "Descargue el fichero antes de 15 días, ya que se borrará pasado ese tiempo"
+message.thisCanTakeSomeTime: "Esto puede tardar unos minutos, espere por favor..."
 
 #  Error
 message.domainNotAllowed: "El email del receptor tiene que ser del dominio ''{receiverDomain}''"
@@ -31,3 +33,4 @@ label.sha1: "SHA1"
 label.size: "Tamaño"
 label.date: "Fecha"
 label.hour: "Hora"
+label.issuer: "Emisor"

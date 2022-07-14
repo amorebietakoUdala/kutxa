@@ -2,3 +2,4 @@ message.error: "Akatsa"
 btn.ok: "Onartu"
 
 maxFileSizeExceeded: "Fitxategiaren tamainia luzeegia da ({fileSize}). Gehienez {maxFileSize} izan ahal ditu"
+minFileSizeExceeded: "Fitxategiaren tamainia txikiegia da ({fileSize}). Minimoa {minFileSize} dira"

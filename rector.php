@@ -19,9 +19,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     );
     // endregion
     // Define what rule sets will be applied
-    $containerConfigurator->import(SymfonyLevelSetList::UP_TO_SYMFONY_60);
-    $containerConfigurator->import(SymfonySetList::SYMFONY_CODE_QUALITY);
-    $containerConfigurator->import(SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION);
+    $containerConfigurator->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
+    $containerConfigurator->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
+    $containerConfigurator->import(SensiolabsSetList::FRAMEWORK_EXTRA_61);
     // get services (needed for register a single rule)
     // $services = $containerConfigurator->services();
     // register a single rule

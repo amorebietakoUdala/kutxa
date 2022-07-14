@@ -11,13 +11,15 @@ parameters:
     urlResourceOwnerDetails: '%env(ENDPOINT_ROOT)%/trustedx-resources/openid/v1/users/me'
     redirectUri: 'app_giltza'
     maxFileSize: '%env(MAX_FILE_SIZE)%'
-    uploadDir: '%kernel.project_dir%/public/uploads/'
+    minFileSize: '%env(MIN_FILE_SIZE)%'
+    uploadDir: '%env(UPLOAD_DIR)%'
     mailerFrom: '%env(MAILER_FROM)%'
     mailerBCC: '%env(MAILER_BCC)%'
     receiverDomain: '%env(RECEIVER_DOMAIN)%'
     sendMessagesReceiver: '%env(bool:SEND_MESSAGES_TO_RECEIVER)%'
     sendMessagesSender: '%env(bool:SEND_MESSAGES_TO_SENDER)%'
     sendBCC: '%env(bool:SEND_BCC)%'
+    receptionEmail: '%env(RECEPTION_EMAIL)%'
 
 services:
     # default configuration for services in *this* file

@@ -15,16 +15,15 @@ class GiltzaController extends AbstractController
     private $options;
 
     public function __construct(
-        UrlGeneratorInterface $urlGenerator, 
-        HttpClientInterface $client, 
-        private string $clientId, 
+        UrlGeneratorInterface $urlGenerator,
+        HttpClientInterface $client,
+        private string $clientId,
         private string $clientSecret,
         private string $redirectUri,
         private string $urlAuthorize,
         private string $urlAccessToken,
-        private string $urlResourceOwnerDetails, 
-    )
-    {
+        private string $urlResourceOwnerDetails,
+    ) {
         $this->client = $client;
         $this->provider = new GiltzaProvider([
             'clientId' => $this->clientId,    // The client ID assigned to you by the provider
@@ -37,7 +36,7 @@ class GiltzaController extends AbstractController
     }
 
     #[Route(path: '/', name: 'app_home')]
-    public function home(): \Symfony\Component\HttpFoundation\Response
+    public function home(): Response
     {
         return $this->redirectToRoute('app_giltza');
     }
@@ -45,6 +44,10 @@ class GiltzaController extends AbstractController
     #[Route(path: '/giltza/{_locale}', name: 'app_giltza', requirements: ['_locale' => 'es|eu|en'])]
     public function giltza(Request $request, string $_locale = 'es'): Response
     {
+        $destination = $request->get('destination');
+        if (null !== $destination) {
+            $request->getSession()->set('destination', $destination);
+        }
         // If we don't have an authorization code then get one
         if (!isset($_GET['code'])) {
             $this->options = [
@@ -81,8 +84,12 @@ class GiltzaController extends AbstractController
                         'giltzaUser',
                         $response
                     );
+                    $destination = $request->getSession()->get('destination');
+                    if (null !== $destination) {
+                        return $this->redirectToRoute($destination);
+                    }
 
-                    return $this->redirectToRoute('app_kutxa');
+                    return $this->redirectToRoute('app_igo');
                 } else {
                     return $this->redirectToRoute('app_giltza');
                 }

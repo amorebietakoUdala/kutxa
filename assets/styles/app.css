@@ -33,6 +33,11 @@ main {
     border-radius: 3rem;
 }
 
+.fill {
+    max-width: -moz-available;
+    max-width: -webkit-fill-available;
+}
+
 @media (max-width: 767px) {
     .logo {
         height: 50px;

@@ -8,17 +8,26 @@
     </head>
    <body>
       {{ 'message.emailTextSender' | trans | raw }}
-      <b>{{ 'label.sha1' | trans }}:</b> {{ data['sha1'] }}<br>
-      <b>{{ 'label.date' | trans }}:</b> {{ date }}<br>
-      <b>{{ 'label.hour' | trans }}:</b> {{ hour }}<br>
-      <b>{{ 'upload.file' | trans }}:</b> {{ data['fileName'] }}<br>
-      <b>{{ 'label.size' | trans }}:</b> {{ data['size'] }}<br>
-      {% if giltzaUser['cif'] != null and giltzaUser['cif'] != 'EMPTY' %}
-         <b>{{ 'label.cif' | trans }}:</b> {{ giltzaUser['cif'] }}<br>
+      {% if data.registrationNumber != null %}
+         {{ 'message.emailTextSenderRow2' | trans({'{registrationNumber}': data.registrationNumber}) | raw }}
       {% endif %}
-      <b>{{ 'label.dni' | trans }}:</b> {{ giltzaUser['dni'] }}<br>
-      <b>{{ 'upload.senderEmail' | trans }}:</b> {{ data['senderEmail'] }}<br>
-      <b>{{ 'upload.receiverEmail' | trans }}:</b> {{ data['receiverEmail'] }}<br>
+      <b>{{ 'label.sha1' | trans }}:</b> {{ data.sha1 }}<br>
+      <b>{{ 'label.date' | trans }}:</b> {{ data.createdAt | date('Y-m-d') }}<br>
+      <b>{{ 'label.hour' | trans }}:</b> {{ data.createdAt | date('H:i:s') }}<br>
+      {% if data.registrationNumber != null %}
+         <b>{{ 'upload.registrationNumber' | trans }}:</b> {{ data.registrationNumber }}<br>
+      {% endif %}
+      <b>{{ 'upload.file' | trans }}:</b> {{ data.file }}<br>
+      <b>{{ 'label.size' | trans }}:</b> {{ data.sizeFormated }}<br>
+      {% if data.issuer != null and data.issuer != 'EMPTY' %}
+      <b>{{ 'label.issuer' | trans }}:</b> {{ data.issuer }}<br>
+      {% endif %}
+      {% if data.cif != null and data.cif != 'EMPTY' %}
+         <b>{{ 'label.cif' | trans }}:</b> {{ data.cif }} {% if data.organization != null and data.organization != 'EMPTY' %} - {{ data.organization }}{% endif %}<br>
+      {% endif %}
+      <b>{{ 'label.dni' | trans }}:</b> {{ data.dni }}{% if data.name != null and data.name != 'EMPTY' %} - {{ data.name }}{% endif %}<br>
+      <b>{{ 'upload.senderEmail' | trans }}:</b> {{ data.senderEmail }}<br>
+      <b>{{ 'upload.receiverEmail' | trans }}:</b> {{ data.receiverEmail }}<br>
    </body>
 </html>
 {% endapply %}

@@ -1,26 +1,33 @@
 <div class="container-fluid" {{ stimulus_controller('file-size', {
       'locale' : app.request.locale|split('_')[0],
-      'maxFileSize' : maxFileSize
+      'maxFileSize' : maxFileSize,
+      'minFileSize' : minFileSize
    }) }}>
    {{ form_start(form, { 'attr': {'data-action': 'file-size#submit'} }) }}
       <div class="row align-items-center">
+         {% if register %}
+            <div class="col-auto">
+                  {{ form_row(form.registrationNumber) }}
+            </div>
+         {% endif %}
          <div class="col-auto">
             {{ form_row(form.file, {'attr' : { 
                'data-file-size-target' : 'file', 
-               'data-action': 'change->file-size#checkMaxFileSize' } 
+               'data-action': 'change->file-size#checkFileSize' } 
                }) 
             }}
          </div>
          <div class="col-auto" data-file-size-target="size"></div>
-         <div class="col-auto">
+      </div>
+      <div class="row align-items-center">     
+         <div class="col-lg-3">
             {{ form_row(form.senderEmail) }}
          </div>
-         <div class="col-auto">
+         <div class="{{ register ? 'col-lg-auto' : 'col-lg-3'}}">
             {{ form_row(form.receiverEmail) }}
          </div>
          <div class="col-auto">
-            <button class="btn btn-primary" data-file-size-target="submitButton">{{ button_label|default('btn.send'|trans) }}</button>
+            <button class="btn btn-primary" data-file-size-target="submitButton">{{ 'btn.send' | trans }}</button>
          </div>
-      </div>
    {{ form_end(form) }}
 </div>

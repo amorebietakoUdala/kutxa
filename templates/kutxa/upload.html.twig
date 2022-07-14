@@ -3,9 +3,29 @@
 {% block title %}{{'title.kutxa.uploadFile' | trans }}{% endblock %}
 
 {% block body %}
-
-<div class="container-fluid">
-   {{ include('kutxa/_form.html.twig') }}
-</div>
-{{ include('common/_alert.html.twig') }}
+   <div  {{ stimulus_controller('spinner') }} data-action="file-size:submitting->spinner#showSpinner">
+      <div
+         class="modal fade"
+         tabindex="-1"
+         aria-hidden="true"
+         data-bs-backdrop="static"
+         data-spinner-target="modal"
+      >
+         <div class="modal-dialog">
+            <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title">{{ 'title.sending' | trans }}</h5>
+                  </div>
+                  <div class="modal-body">
+                     <img src="{{ asset('build/images/spinner.gif') }}" class="fill">                  
+                     <div class="text-center">{{ 'message.thisCanTakeSomeTime' | trans }}</div>
+                  </div>
+            </div>
+         </div>
+      </div>   
+      <div class="container-fluid">
+         {{ include('kutxa/_form.html.twig') }}
+      </div>
+   </div>
+   {{ include('common/_alert.html.twig') }}
 {% endblock %}

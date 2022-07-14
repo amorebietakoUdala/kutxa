@@ -1,11 +1,13 @@
 #  Titles 
 title.appTitle: "Kutxa"
 title.kutxa.uploadFile: "Fitxategia igo"
+title.sending: "Bidaltzen"
 
 #  Forms
 upload.file: "Fitxategia"
 upload.senderEmail: "Bidaltzailearen emaila"
 upload.receiverEmail: "Jasotzailearen emaila"
+upload.registrationNumber: "Erregistro zenbakia"
 
 #  Buttons
 btn.send: "Bidali"
@@ -13,13 +15,13 @@ btn.send: "Bidali"
 #  Messages
 message.fileSaved: "Fitxategia behar bezala gorde da"
 message.emailTextReceiver: "Kutxa bidez fitxategi bat bidali dizute. Bidalketaren datuak hauek dira:"
-message.emailTextSender: |
-  <p>Zuk bidalitako tamaina handiko fitxategia Amorebieta-Etxanoko udalari ondo heldu zaio.</p>
-  <p>Ofizialki sarrera honen erregsitro behar baduzu, egoitza elektronikoan, <a href="https://e-udala.amorebieta-etxano.eus">https://e-udala.amorebieta-etxano.eus</a>, eskabide orokorra egin halako datuak emanda:</p>
+message.emailTextSender: "<p>Zuk bidalitako tamaina handiko fitxategia Amorebieta-Etxanoko udalari ondo heldu zaio.</p>"
+message.emailTextSenderRow2: "<p>Erregistroa baliozkoa izateko egoitza elektronikoan <a href=\"https://e-udala.amorebieta-etxano.eus\">https://e-udala.amorebieta-etxano.eus</a>-en erregistro bat egin behar izan duzu aurretiaz ondorengo zenbakiarekin {registrationNumber}</p>"
 message.emailSubjectReceiver: "Kutxa bidez fitxategi bat bidali dizute"
-message.emailSubjectSender: "Fitxategia kutxan gorde egin da"
+message.emailSubjectSender: "<p>Fitxategia kutxan gorde egin da</p><br>"
 message.downloadURL: "Fitxategi bat bidalia Amorebieta-Etxanoko Udalara kutxa aplikazioa bidez "
 message.theFileBeDeletedIn15days: "Jaitsi fitxategia 15 egun baino lehen, epe hori pasatzekotan fitxategia ezabatu egingo bait da"
+message.thisCanTakeSomeTime: "Honek denbora eraman dezake, itxaron mesedez..."
 
 #  Error
 message.domainNotAllowed: "Jasotzailearen emailaren domeinua ''{receiverDomain}'' izan behar da"
@@ -29,3 +31,4 @@ label.cif: "IFK"
 label.dni: "NAN"
 label.sha1: "SHA1"
 label.size: "Tamainia"
+label.issuer: "Jaulkitzailea"

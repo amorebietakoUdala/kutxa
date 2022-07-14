@@ -10,35 +10,47 @@ export default class extends Controller {
     static values = {
         locale: String,
         maxFileSize: String,
+        minFileSize: String,
     };
 
     locale = null;
 
-    submit(event) {
+    async submit(event) {
         event.preventDefault();
-        console.log(event);
-        if (this.checkMaxFileSize(event)) {
-            this.submitButtonTarget.toggleAttribute('disabled', false);
+        if (this.checkFileSize(event)) {
+            this.submitButtonTarget.toggleAttribute('disabled', true);
+            this.dispatch('submitting');
             event.currentTarget.submit();
         }
     }
 
-    checkMaxFileSize(event) {
+    checkFileSize(event) {
         event.preventDefault();
-        const maxBytes = this.calculateMaxSizeInBytes(this.maxFileSizeValue);
+        const maxBytes = this.calculateSizeInBytes(this.maxFileSizeValue);
+        const minBytes = this.calculateSizeInBytes(this.minFileSizeValue);
         const fsize = this.fileTarget.files[0].size;
         this.sizeTarget.innerHTML = this.formatBytes(fsize);
-        if (fsize > maxBytes) {
+        if (fsize > maxBytes || fsize < minBytes ) {
+            Translator.fromJSON(translations);
+            Translator.locale = this.localeValue;
+            let message = null;
+            if ( fsize > maxBytes ) {
+                message = Translator.trans('maxFileSizeExceeded', {
+                    'fileSize' : this.formatBytes(fsize),
+                    'maxFileSize' : this.maxFileSizeValue,
+                },'alerts');
+            }
+            if ( fsize < minBytes ) {
+                message = Translator.trans('minFileSizeExceeded', {
+                    'fileSize' : this.formatBytes(fsize),
+                    'minFileSize' : this.minFileSizeValue,
+                },'alerts');
+            }
             import ('sweetalert2')
                 .then( async (Swal) => {
-                    Translator.fromJSON(translations);
-                    Translator.locale = this.localeValue;
                     Swal.default.fire({
                         template: '#error',
-                        html: Translator.trans('maxFileSizeExceeded', {
-                            'fileSize' : this.formatBytes(fsize),
-                            'maxFileSize' : this.maxFileSizeValue,
-                        },'alerts'),
+                        html: message,
                     })
                 })
                 .catch( error => console.error(error) )
@@ -49,18 +61,15 @@ export default class extends Controller {
 
     formatBytes(bytes, precision = 2) { 
         let units = ['B', 'K', 'M', 'G', 'T']; 
-
         bytes = Math.max(bytes, 0); 
         let pow = Math.floor((bytes ? Math.log(bytes) : 0) / Math.log(1024)); 
         pow = Math.min(pow, units.length - 1); 
+        bytes /= Math.pow(1024, pow);
 
-        // Uncomment one of the following alternatives:
-        //$bytes /= pow(1024, $pow);
-        bytes /= (1 << (10 * pow)); 
         return bytes.toFixed(precision) + ' ' + units[pow]; 
     }
 
-    calculateMaxSizeInBytes(maxFileSize) {
+    calculateSizeInBytes(maxFileSize) {
         let index = 0;
         let parsed = 0;
         for (let i=0; i < maxFileSize.length ; i++ ) {
@@ -72,8 +81,7 @@ export default class extends Controller {
         }
         let number = maxFileSize.substring(0,index);
         let unit = maxFileSize.substring(index);
-        let units = ['B', 'K', 'M', 'G', 'T']; 
-
+        let units = ['B', 'Ki', 'Mi', 'Gi', 'Ti']; 
         let pow = units.indexOf(unit);
         let bytes = number * Math.pow(1024,pow);
 
