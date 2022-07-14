@@ -4,34 +4,37 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.13",
         "league/oauth2-client": "^2.6",
         "symfony/apache-pack": "^1.0",
-        "symfony/console": "5.4.*",
-        "symfony/debug-bundle": "5.4.*",
-        "symfony/dotenv": "5.4.*",
+        "symfony/console": "6.0.*",
+        "symfony/debug-bundle": "6.0.*",
+        "symfony/dotenv": "6.0.*",
         "symfony/flex": "^1.17|^2",
-        "symfony/form": "5.4.*",
-        "symfony/framework-bundle": "5.4.*",
-        "symfony/http-client": "5.4.*",
-        "symfony/mailer": "5.4.*",
+        "symfony/form": "6.0.*",
+        "symfony/framework-bundle": "6.0.*",
+        "symfony/http-client": "6.0.*",
+        "symfony/mailer": "6.0.*",
         "symfony/maker-bundle": "^1.36",
-        "symfony/mime": "5.4.*",
+        "symfony/mime": "6.0.*",
         "symfony/monolog-bundle": "^3.7",
-        "symfony/runtime": "5.4.*",
-        "symfony/serializer": "5.4.*",
-        "symfony/translation": "5.4.*",
-        "symfony/twig-bundle": "5.4.*",
-        "symfony/validator": "5.4.*",
+        "symfony/runtime": "6.0.*",
+        "symfony/serializer": "6.0.*",
+        "symfony/translation": "6.0.*",
+        "symfony/twig-bundle": "6.0.*",
+        "symfony/validator": "6.0.*",
         "symfony/webpack-encore-bundle": "^1.13",
-        "symfony/yaml": "5.4.*",
+        "symfony/yaml": "6.0.*",
         "twig/cssinliner-extra": "^3.3",
         "twig/extra-bundle": "^3.3"
     },
     "config": {
+        "platform": {
+            "php": "8.1"
+        },        
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "symfony/flex": true,
@@ -76,13 +79,13 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.4.*"
+            "require": "6.0.*"
         }
     },
     "require-dev": {
-        "rector/rector": "0.12.*",
-        "symfony/stopwatch": "5.4.*",
-        "symfony/web-profiler-bundle": "5.4.*",
+        "rector/rector": "0.12.20",
+        "symfony/stopwatch": "6.0.*",
+        "symfony/web-profiler-bundle": "6.0.*",
         "willdurand/js-translation-bundle": "^5.0"
     }
 }

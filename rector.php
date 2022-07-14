@@ -1,11 +1,29 @@
 <?php
 
 declare(strict_types=1);
-
-use Rector\Config\RectorConfig;
+use Rector\Core\Configuration\Option;
+use Rector\Core\ValueObject\PhpVersion;
+use Rector\Doctrine\Set\DoctrineSetList;
+use Rector\Php74\Rector\Property\TypedPropertyRector;
+use Rector\Set\ValueObject\LevelSetList;
+use Rector\Symfony\Set\SensiolabsSetList;
 use Rector\Symfony\Set\SymfonyLevelSetList;
 use Rector\Symfony\Set\SymfonySetList;
-
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->sets([SymfonySetList::SYMFONY_54, SymfonyLevelSetList::UP_TO_SYMFONY_53]);
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+return static function (ContainerConfigurator $containerConfigurator): void {
+    // region Symfony Container
+    $parameters = $containerConfigurator->parameters();
+    $parameters->set(
+        Option::SYMFONY_CONTAINER_XML_PATH_PARAMETER,
+        __DIR__ . '/var/cache/dev/App_KernelDevDebugContainer.xml'
+    );
+    // endregion
+    // Define what rule sets will be applied
+    $containerConfigurator->import(SymfonyLevelSetList::UP_TO_SYMFONY_60);
+    $containerConfigurator->import(SymfonySetList::SYMFONY_CODE_QUALITY);
+    $containerConfigurator->import(SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION);
+    // get services (needed for register a single rule)
+    // $services = $containerConfigurator->services();
+    // register a single rule
+    // $services->set(TypedPropertyRector::class);
 };

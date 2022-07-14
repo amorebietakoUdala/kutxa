@@ -8,26 +8,10 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-class Audit
+class Audit implements \Stringable
 {
-    private $cif;
-    private $dni;
-    private $fileName;
-    private $sha1;
-    private $size;
-    private $senderEmail;
-    private $receiverEmail;
-    private $date;
-
-    public function __construct($cif, $dni, $fileName, $sha1, $size, $senderEmail, $receiverEmail)
+    public function __construct(private $cif, private $dni, private $fileName, private $sha1, private $size, private $senderEmail, private $receiverEmail, private ?DateTime $date = null)
     {
-        $this->cif = $cif;
-        $this->dni = $dni;
-        $this->fileName = $fileName;
-        $this->sha1 = $sha1;
-        $this->size = $size;
-        $this->senderEmail = $senderEmail;
-        $this->receiverEmail = $receiverEmail;
     }
 
     public function __toString(): string

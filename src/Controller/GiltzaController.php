@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Services\GiltzaProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,31 +14,36 @@ class GiltzaController extends AbstractController
 {
     private $options;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, ParameterBagInterface $paramBag, HttpClientInterface $client)
+    public function __construct(
+        UrlGeneratorInterface $urlGenerator, 
+        HttpClientInterface $client, 
+        private string $clientId, 
+        private string $clientSecret,
+        private string $redirectUri,
+        private string $urlAuthorize,
+        private string $urlAccessToken,
+        private string $urlResourceOwnerDetails, 
+    )
     {
         $this->client = $client;
         $this->provider = new GiltzaProvider([
-            'clientId' => $paramBag->get('clientId'),    // The client ID assigned to you by the provider
-            'clientSecret' => $paramBag->get('clientSecret'),    // The client password assigned to you by the provider
-            'redirectUri' => $urlGenerator->generate($paramBag->get('redirectUri'), [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'urlAuthorize' => $paramBag->get('urlAuthorize'),
-            'urlAccessToken' => $paramBag->get('urlAccessToken'),
-            'urlResourceOwnerDetails' => $paramBag->get('urlResourceOwnerDetails'),
+            'clientId' => $this->clientId,    // The client ID assigned to you by the provider
+            'clientSecret' => $this->clientSecret,    // The client password assigned to you by the provider
+            'redirectUri' => $urlGenerator->generate($this->redirectUri, [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'urlAuthorize' => $this->urlAuthorize,
+            'urlAccessToken' => $this->urlAccessToken,
+            'urlResourceOwnerDetails' => $this->urlResourceOwnerDetails,
         ]);
     }
 
-    /**
-     * @Route("/", name="app_home")
-     */
-    public function home()
+    #[Route(path: '/', name: 'app_home')]
+    public function home(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->redirectToRoute('app_giltza');
     }
 
-    /**
-     * @Route("/giltza/{_locale}", name="app_giltza", requirements={"_locale"="es|eu|en"})
-     */
-    public function giltza(string $_locale = 'es', Request $request): Response
+    #[Route(path: '/giltza/{_locale}', name: 'app_giltza', requirements: ['_locale' => 'es|eu|en'])]
+    public function giltza(Request $request, string $_locale = 'es'): Response
     {
         // If we don't have an authorization code then get one
         if (!isset($_GET['code'])) {
@@ -68,7 +72,7 @@ class GiltzaController extends AbstractController
                 $resourceOwner = $this->provider->getResourceOwner($accessToken);
                 $authenticatedEequest = $this->provider->getAuthenticatedRequest(
                     'GET',
-                    $this->getParameter('urlResourceOwnerDetails'),
+                    $this->urlResourceOwnerDetails,
                     $accessToken
                 );
                 if (!$accessToken->hasExpired()) {
@@ -88,9 +92,7 @@ class GiltzaController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/logout", name="app_logout")
-     */
+    #[Route(path: '/logout', name: 'app_logout')]
     public function logout(Request $request): Response
     {
         $request->getSession()->invalidate();

@@ -32,55 +32,25 @@ class GiltzaProvider extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
-    /**
-     * @var string
-     */
-    private $urlAuthorize;
+    private ?string $urlAuthorize = null;
 
-    /**
-     * @var string
-     */
-    private $urlAccessToken;
+    private ?string $urlAccessToken = null;
 
-    /**
-     * @var string
-     */
-    private $urlResourceOwnerDetails;
+    private ?string $urlResourceOwnerDetails = null;
 
-    /**
-     * @var string
-     */
-    private $accessTokenMethod;
+    private ?string $accessTokenMethod = null;
 
-    /**
-     * @var string
-     */
-    private $accessTokenResourceOwnerId;
+    private ?string $accessTokenResourceOwnerId = null;
 
-    /**
-     * @var array|null
-     */
-    private $scopes = null;
+    private ?array $scopes = null;
 
-    /**
-     * @var string
-     */
-    private $scopeSeparator;
+    private ?string $scopeSeparator = null;
 
-    /**
-     * @var string
-     */
-    private $responseError = 'error';
+    private string $responseError = 'error';
 
-    /**
-     * @var string
-     */
-    private $responseCode;
+    private ?string $responseCode = null;
 
-    /**
-     * @var string
-     */
-    private $responseResourceOwnerId = 'id';
+    private string $responseResourceOwnerId = 'id';
 
     public function __construct(array $options = [], array $collaborators = [])
     {

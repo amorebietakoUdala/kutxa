@@ -18,40 +18,31 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UploadController extends AbstractController
 {
-    private $mailer;
-    private $translator;
-    private $logger;
-
-    public function __construct(MailerInterface $mailer, TranslatorInterface $translator, LoggerInterface $auditLogger)
+    public function __construct(private readonly MailerInterface $mailer, private readonly TranslatorInterface $translator, private readonly LoggerInterface $logger, private string $maxFileSize, private string $receiverDomain, private string $uploadDir, private string $sendMessagesReceiver, private string $sendMessagesSender, private string $mailerFrom, private string $sendBCC, private string $mailerBCC)
     {
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->logger = $auditLogger;
     }
 
-    /**
-     * @Route("/{_locale}/upload", name="app_kutxa")
-     */
+    #[Route(path: '/{_locale}/upload', name: 'app_kutxa')]
     public function upload(Request $request, SluggerInterface $slugger): Response
     {
         if ($request->getSession()->get('giltzaUser') === null) {
             return $this->redirectToRoute('app_giltza');
         }
         $form = $this->createForm(UploadType::class, null, [
-            'maxFileSize' => $this->getParameter('maxFileSize'),
+            'maxFileSize' => $this->maxFileSize,
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            if (strpos($data['receiverEmail'], $this->getParameter('receiverDomain')) === false) {
+            if (!str_contains((string) $data['receiverEmail'], (string) $this->receiverDomain)) {
                 $message = $this->translator->trans('message.domainNotAllowed', [
-                    'receiverDomain' => $this->getParameter('receiverDomain'),
+                    'receiverDomain' => $this->receiverDomain,
                 ]);
                 $this->addFlash('error', $message);
 
                 return $this->render('kutxa/upload.html.twig', [
                     'form' => $form->createView(),
-                    'maxFileSize' => $this->getParameter('maxFileSize'),
+                    'maxFileSize' => $this->maxFileSize,
                 ]);
             }
             /** @var UploadedFile $file */
@@ -75,7 +66,7 @@ class UploadController extends AbstractController
 
         return $this->render('kutxa/upload.html.twig', [
             'form' => $form->createView(),
-            'maxFileSize' => $this->getParameter('maxFileSize'),
+            'maxFileSize' => $this->maxFileSize,
         ]);
     }
 
@@ -91,7 +82,7 @@ class UploadController extends AbstractController
 
             try {
                 $sha1 = sha1_file($file);
-                $finalDir = $this->getParameter('uploadDir').'/'.$sha1;
+                $finalDir = $this->uploadDir.'/'.$sha1;
                 file_exists($finalDir) ? $this->deleteDirectory($finalDir) : mkdir($finalDir);
                 $file->move($finalDir, $newFilename);
             } catch (FileException $e) {
@@ -120,7 +111,7 @@ class UploadController extends AbstractController
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        $bytes /= pow(1024, $pow);
+        $bytes /= 1024 ** $pow;
 
         return round($bytes, $precision).' '.$units[$pow];
     }
@@ -133,14 +124,14 @@ class UploadController extends AbstractController
             'date' => (new \DateTime())->format('Y-m-d'),
             'hour' => (new \DateTime())->format('H:i:s'),
         ];
-        if ($this->getParameter('sendMessagesReceiver')) {
-//            $html = $this->createEmail($giltzaUser, $data);
+        if ($this->sendMessagesReceiver) {
+            // $html = $this->createEmail($giltzaUser, $data);
             $template = 'kutxa/fileReceptionEmailReceiver.html.twig';
             $subject = $this->translator->trans('message.emailSubjectReceiver');
             $this->sendEmail($data['receiverEmail'], $subject, $template, $context);
         }
-        if ($this->getParameter('sendMessagesSender')) {
-//            $html = $this->createEmail($giltzaUser, $data, false);
+        if ($this->sendMessagesSender) {
+            // $html = $this->createEmail($giltzaUser, $data, false);
             $template = 'kutxa/fileReceptionEmailSender.html.twig';
             $subject = $this->translator->trans('message.emailSubjectSender');
             $this->sendEmail($data['receiverEmail'], $subject, $template, $context);
@@ -150,13 +141,13 @@ class UploadController extends AbstractController
     private function sendEmail($to, $subject, $template, $context)
     {
         $email = (new TemplatedEmail())
-            ->from($this->getParameter('mailerFrom'))
+            ->from($this->mailerFrom)
             ->to($to)
             ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);
-        if ($this->getParameter('sendBCC')) {
-            $addresses = [$this->getParameter('mailerBCC')];
+        if ($this->sendBCC) {
+            $addresses = [$this->mailerBCC];
             foreach ($addresses as $address) {
                 $email->addBcc($address);
             }

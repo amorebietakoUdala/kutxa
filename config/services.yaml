@@ -24,6 +24,22 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $maxFileSize: '%maxFileSize%' 
+            $receiverDomain: '%receiverDomain%'
+            $uploadDir: '%uploadDir%' 
+            $sendMessagesReceiver: '%sendMessagesReceiver%' 
+            $sendMessagesSender: '%sendMessagesSender%' 
+            $mailerFrom: '%mailerFrom%' 
+            $sendBCC: '%sendBCC%'
+            $mailerBCC: '%mailerBCC%'
+            $clientId: '%clientId%'
+            $clientSecret: '%clientSecret%'
+            $urlAuthorize: '%urlAuthorize%'
+            $urlAccessToken: '%urlAccessToken%'
+            $urlResourceOwnerDetails: '%urlResourceOwnerDetails%'
+            $redirectUri: '%redirectUri%'
+
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -42,3 +58,4 @@ services:
         class: Monolog\Formatter\LineFormatter
         arguments:
             $format: "[%%datetime%%] %%channel%%.%%level_name%%: %%message%%\n"
+
