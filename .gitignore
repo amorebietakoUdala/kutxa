@@ -16,3 +16,6 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+/tools/php-cs-fixer/vendor/
+/.php-cs-fixer.cache

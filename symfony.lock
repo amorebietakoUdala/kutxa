@@ -41,6 +41,9 @@
     "paragonie/random_compat": {
         "version": "v9.99.100"
     },
+    "phpstan/phpstan": {
+        "version": "1.8.1"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -64,6 +67,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "3.0.3"
+    },
+    "rector/rector": {
+        "version": "0.12.23"
     },
     "symfony/apache-pack": {
         "version": "1.0",

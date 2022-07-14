@@ -6,7 +6,7 @@ import Translator from 'bazinga-translator';
 const translations = require('../../public/translations/' + Translator.locale + '.json');
 
 export default class extends Controller {
-    static targets = ['file', 'size'];
+    static targets = ['file', 'size', 'submitButton'];
     static values = {
         locale: String,
         maxFileSize: String,
@@ -18,6 +18,7 @@ export default class extends Controller {
         event.preventDefault();
         console.log(event);
         if (this.checkMaxFileSize(event)) {
+            this.submitButtonTarget.toggleAttribute('disabled', false);
             event.currentTarget.submit();
         }
     }

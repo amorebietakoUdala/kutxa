@@ -13,18 +13,17 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GiltzaController extends AbstractController
 {
-
     private $options;
 
     public function __construct(UrlGeneratorInterface $urlGenerator, ParameterBagInterface $paramBag, HttpClientInterface $client)
     {
         $this->client = $client;
-        $this->provider = new GiltzaProvider(        [
-            'clientId'                => $paramBag->get('clientId'),    // The client ID assigned to you by the provider
-            'clientSecret'            => $paramBag->get('clientSecret'),    // The client password assigned to you by the provider
-            'redirectUri'             => $urlGenerator->generate($paramBag->get('redirectUri'),[],UrlGeneratorInterface::ABSOLUTE_URL),
-            'urlAuthorize'            => $paramBag->get('urlAuthorize'),
-            'urlAccessToken'          => $paramBag->get('urlAccessToken'),
+        $this->provider = new GiltzaProvider([
+            'clientId' => $paramBag->get('clientId'),    // The client ID assigned to you by the provider
+            'clientSecret' => $paramBag->get('clientSecret'),    // The client password assigned to you by the provider
+            'redirectUri' => $urlGenerator->generate($paramBag->get('redirectUri'), [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'urlAuthorize' => $paramBag->get('urlAuthorize'),
+            'urlAccessToken' => $paramBag->get('urlAccessToken'),
             'urlResourceOwnerDetails' => $paramBag->get('urlResourceOwnerDetails'),
         ]);
     }
@@ -32,7 +31,8 @@ class GiltzaController extends AbstractController
     /**
      * @Route("/", name="app_home")
      */
-    public function home() {
+    public function home()
+    {
         return $this->redirectToRoute('app_giltza');
     }
 
@@ -46,16 +46,15 @@ class GiltzaController extends AbstractController
             $this->options = [
                 'response_type' => 'code',
                 'scope' => 'urn:izenpe:identity:global',
-                'ui_locales' =>  $_locale,
-                'prompt' => 'login'
+                'ui_locales' => $_locale,
+                'prompt' => 'login',
     //            'acr_values' => 'urn:safelayer:tws:policies:authentication:flow:bakq',
             ];
-    
+
             $authorizationUrl = $this->provider->getAuthorizationUrl($this->options);
             $_SESSION['oauth2state'] = $this->provider->getState();
-            header('Location: ' . $authorizationUrl);
+            header('Location: '.$authorizationUrl);
             exit;
-
         } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
             if (isset($_SESSION['oauth2state'])) {
                 unset($_SESSION['oauth2state']);
@@ -64,7 +63,7 @@ class GiltzaController extends AbstractController
         } else {
             try {
                 $accessToken = $this->provider->getAccessToken('authorization_code', [
-                    'code' => $_GET['code']
+                    'code' => $_GET['code'],
                 ]);
                 $resourceOwner = $this->provider->getResourceOwner($accessToken);
                 $authenticatedEequest = $this->provider->getAuthenticatedRequest(
@@ -75,9 +74,10 @@ class GiltzaController extends AbstractController
                 if (!$accessToken->hasExpired()) {
                     $response = $this->provider->getParsedResponse($authenticatedEequest);
                     $request->getSession()->set(
-                        "giltzaUser",
+                        'giltzaUser',
                         $response
                     );
+
                     return $this->redirectToRoute('app_kutxa');
                 } else {
                     return $this->redirectToRoute('app_giltza');
@@ -94,6 +94,7 @@ class GiltzaController extends AbstractController
     public function logout(Request $request): Response
     {
         $request->getSession()->invalidate();
+
         return $this->json('logout');
     }
 }
