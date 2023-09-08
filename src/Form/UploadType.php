@@ -10,10 +10,10 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UploadType extends AbstractType
@@ -41,13 +41,13 @@ class UploadType extends AbstractType
             ->add('senderEmail', EmailType::class, [
                 'label' => 'upload.senderEmail',
                 'constraints' => [
-                    new Email()
-                ]
+                    new Email(),
+                ],
                 ])
             ->add('receiverEmail', HiddenType::class, [
                 'label' => 'upload.receiverEmail',
                 'constraints' => [
-                    new Email()
+                    new Email(),
                 ],
                 'data' => $receptionEmail,
             ])
@@ -58,9 +58,8 @@ class UploadType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                     new RegistrationNumber(),
-                ]
+                ],
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

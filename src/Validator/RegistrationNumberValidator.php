@@ -7,15 +7,15 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class RegistrationNumberValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
-        /** @var App\Validator\RegistrationNumber $constraint */
+        /* @var App\Validator\RegistrationNumber $constraint */
 
         if (null === $value || '' === $value) {
             return;
         }
 
-        if ( preg_match('/^\d+\/\d+$/', $value) ) {
+        if (preg_match('/^\d+\/\d+$/', (string) $value)) {
             return;
         }
 

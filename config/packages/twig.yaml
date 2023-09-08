@@ -3,7 +3,7 @@ twig:
     form_themes: ['bootstrap_5_layout.html.twig']
     paths:
         # point this wherever your css files live
-        '%kernel.project_dir%/assets/styles': styles
+        '%kernel.project_dir%/assets/styles': styles    
 
 when@test:
     twig:

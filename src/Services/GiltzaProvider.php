@@ -1,20 +1,20 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
- * @link http://thephpleague.com/oauth2-client/ Documentation
- * @link https://packagist.org/packages/league/oauth2-client Packagist
- * @link https://github.com/thephpleague/oauth2-client GitHub
+ *
+ * @see http://thephpleague.com/oauth2-client/ Documentation
+ * @see https://packagist.org/packages/league/oauth2-client Packagist
+ * @see https://github.com/thephpleague/oauth2-client GitHub
  */
 
 namespace App\Services;
 
-use InvalidArgumentException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
@@ -59,7 +59,7 @@ class GiltzaProvider extends AbstractProvider
     /**
      * @var array|null
      */
-    private $scopes = null;
+    private $scopes;
 
     /**
      * @var string
@@ -81,15 +81,11 @@ class GiltzaProvider extends AbstractProvider
      */
     private $responseResourceOwnerId = 'id';
 
-    /**
-     * @param array $options
-     * @param array $collaborators
-     */
     public function __construct(array $options = [], array $collaborators = [])
     {
         $this->assertRequiredOptions($options);
 
-        $possible   = $this->getConfigurableOptions();
+        $possible = $this->getConfigurableOptions();
         $configured = array_intersect_key($options, array_flip($possible));
 
         foreach ($configured as $key => $value) {
@@ -138,80 +134,54 @@ class GiltzaProvider extends AbstractProvider
     /**
      * Verifies that all required options have been passed.
      *
-     * @param  array $options
      * @return void
-     * @throws InvalidArgumentException
+     *
+     * @throws \InvalidArgumentException
      */
     private function assertRequiredOptions(array $options)
     {
         $missing = array_diff_key(array_flip($this->getRequiredOptions()), $options);
 
         if (!empty($missing)) {
-            throw new InvalidArgumentException(
-                'Required options not defined: ' . implode(', ', array_keys($missing))
-            );
+            throw new \InvalidArgumentException('Required options not defined: '.implode(', ', array_keys($missing)));
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getBaseAuthorizationUrl(): string
     {
         return $this->urlAuthorize;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getBaseAccessTokenUrl(array $params): string
     {
         return $this->urlAccessToken;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getResourceOwnerDetailsUrl(AccessToken $token): string 
+    public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
         return $this->urlResourceOwnerDetails;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDefaultScopes(): array
     {
         return $this->scopes;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getAccessTokenMethod(): string 
+    protected function getAccessTokenMethod(): string
     {
         return $this->accessTokenMethod ?: parent::getAccessTokenMethod();
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getAccessTokenResourceOwnerId(): ?string
     {
         return $this->accessTokenResourceOwnerId ?: parent::getAccessTokenResourceOwnerId();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getScopeSeparator(): string 
+    protected function getScopeSeparator(): string
     {
         return $this->scopeSeparator ?: parent::getScopeSeparator();
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function checkResponse(ResponseInterface $response, $data): void
     {
         if (!empty($data[$this->responseError])) {
@@ -219,7 +189,7 @@ class GiltzaProvider extends AbstractProvider
             if (!is_string($error)) {
                 $error = var_export($error, true);
             }
-            $code  = $this->responseCode && !empty($data[$this->responseCode])? $data[$this->responseCode] : 0;
+            $code = $this->responseCode && !empty($data[$this->responseCode]) ? $data[$this->responseCode] : 0;
             if (!is_int($code)) {
                 $code = intval($code);
             }
@@ -227,9 +197,6 @@ class GiltzaProvider extends AbstractProvider
         }
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);

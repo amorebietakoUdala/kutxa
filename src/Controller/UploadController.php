@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Audit;
 use App\Form\UploadType;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -19,46 +17,50 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UploadController extends AbstractController
 {
- 
-    private MailerInterface $mailer;
-    private TranslatorInterface $translator;
-    private EntityManagerInterface $em;
-    private string $downloadUri;
-
-    public function __construct(MailerInterface $mailer, TranslatorInterface $translator, LoggerInterface $auditLogger, EntityManagerInterface $em, string $downloadUri = '/uploads') {
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->em = $em;
-        $this->downloadUri = $downloadUri;
+    public function __construct(
+        private readonly MailerInterface $mailer,
+        private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface $em,
+        private readonly string $maxFileSize,
+        private readonly string $minFileSize,
+        private readonly string $receptionEmail,
+        private readonly string $receiverDomain,
+        private readonly string $uploadDir,
+        private readonly string $sendMessagesReceiver,
+        private readonly string $sendMessagesSender,
+        private readonly string $mailerFrom,
+        private readonly string $sendBCC,
+        private readonly string $mailerBCC,
+        private readonly string $downloadUri = '/uploads',
+    ) {
     }
 
-    /**
-     * @Route("/{_locale}/erregistro", name="app_register")
-     */
+    #[Route(path: '/{_locale}/erregistro', name: 'app_register')]
     public function upload(Request $request): Response
     {
-        if ( $request->getSession()->get('giltzaUser') === null ) {
+        if ($request->getSession()->get('giltzaUser') === null) {
             return $this->redirectToRoute('app_giltza');
         }
-        $form = $this->createForm(UploadType::class,null,[
-            'maxFileSize' => $this->getParameter('maxFileSize'),
-            'minFileSize' => $this->getParameter('minFileSize'),
-            'receptionEmail' => $this->getParameter('receptionEmail'),
+        $form = $this->createForm(UploadType::class, null, [
+            'maxFileSize' => $this->maxFileSize,
+            'minFileSize' => $this->minFileSize,
+            'receptionEmail' => $this->receptionEmail,
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Audit $data */
             $data = $form->getData();
-            if ( strpos($data->getReceiverEmail(), $this->getParameter('receiverDomain')) === false ) {
+            if (!str_contains($data->getReceiverEmail(), $this->receiverDomain)) {
                 $message = $this->translator->trans('message.domainNotAllowed', [
-                    'receiverDomain' => $this->getParameter('receiverDomain'),
+                    'receiverDomain' => $this->receiverDomain,
                 ]);
                 $this->addFlash('error', $message);
-                return $this->render('kutxa/upload.html.twig',[
-                    'form' => $form->createView(),
-                    'maxFileSize' => $this->getParameter('maxFileSize'),
-                    'minFileSize' => $this->getParameter('minFileSize'),
-                ]);                
+
+                return $this->render('kutxa/upload.html.twig', [
+                    'form' => $form,
+                    'maxFileSize' => $this->maxFileSize,
+                    'minFileSize' => $this->minFileSize,
+                ]);
             }
             /** @var UploadedFile $file */
             $file = $form->get('file')->getData();
@@ -73,18 +75,20 @@ class UploadController extends AbstractController
                 $this->em->flush();
                 $message = $this->translator->trans('message.fileSaved');
                 $this->addFlash('success', $message);
+
                 return $this->redirectToRoute('app_register');
             }
         }
 
-        return $this->render('kutxa/upload.html.twig',[
-            'form' => $form->createView(),
-            'maxFileSize' => $this->getParameter('maxFileSize'),
-            'minFileSize' => $this->getParameter('minFileSize'),
+        return $this->render('kutxa/upload.html.twig', [
+            'form' => $form,
+            'maxFileSize' => $this->maxFileSize,
+            'minFileSize' => $this->minFileSize,
         ]);
     }
 
-    private function moveUploadedFile(UploadedFile $file, $directory = null) {
+    private function moveUploadedFile(UploadedFile $file, $directory = null): bool
+    {
         $error = false;
         if ($file) {
             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -93,25 +97,28 @@ class UploadController extends AbstractController
                 $sha1 = sha1_file($file);
                 $finalDir = $this->createDirectories($sha1, $directory);
                 file_exists($finalDir) ? $this->deleteDirectory($finalDir) : mkdir($finalDir);
-                $file->move($finalDir,$newFilename);
+                $file->move($finalDir, $newFilename);
             } catch (FileException $e) {
                 $error = true;
                 $this->addFlash('error', $e->getMessage());
             }
         }
+
         return $error;
     }
 
-    private function createDirectories($sha1, $directory = null) {
+    private function createDirectories($sha1, $directory = null): string
+    {
         $year = date('Y');
-        $baseDir = $this->getParameter('uploadDir').'/'.$year;
-        if ( !file_exists($baseDir) ) {
-            mkdir($baseDir);
+        $baseDir = $this->uploadDir.'/'.$year;
+        if (!file_exists($baseDir)) {
+            dump($baseDir);
+            mkdir($baseDir, 0777, true);
         }
-        if ( null !== $directory ) {
-            $fixedDirectory = str_replace('/','-', $directory);
+        if (null !== $directory) {
+            $fixedDirectory = str_replace('/', '-', (string) $directory);
             $registrationRootDir = $baseDir.'/'.$fixedDirectory;
-            if ( file_exists($registrationRootDir) ) {
+            if (file_exists($registrationRootDir)) {
                 $this->deleteDirectory($registrationRootDir);
             }
             mkdir($registrationRootDir);
@@ -119,38 +126,39 @@ class UploadController extends AbstractController
         } else {
             $finalDir = $baseDir.'/'.$sha1;
         }
+
         return $finalDir;
     }
 
-    private function sendEmails(Audit $data) {
+    private function sendEmails(Audit $data): void
+    {
         $context = [
             'data' => $data,
             'downloadUri' => $this->downloadUri,
             'year' => date('Y'),
         ];
-        if ($this->getParameter('sendMessagesReceiver')) {
+        if ($this->sendMessagesReceiver) {
             $template = 'kutxa/fileReceptionEmailReceiver.html.twig';
             $subject = $this->translator->trans('message.emailSubjectReceiver');
-//            $html = $this->renderView('kutxa/fileReceptionEmailReceiver.html.twig', $context);
             $this->sendEmail($data->getReceiverEmail(), $subject, $template, $context);
         }
-        if ($this->getParameter('sendMessagesSender')) {
+        if ($this->sendMessagesSender) {
             $template = 'kutxa/fileReceptionEmailSender.html.twig';
             $subject = $this->translator->trans('message.emailSubjectSender');
-//            $html = $this->renderView('kutxa/fileReceptionEmailSender.html.twig', $context);
             $this->sendEmail($data->getSenderEmail(), $subject, $template, $context);
         }
     }
 
-    private function sendEmail($to, $subject, $template, $context) {
+    private function sendEmail($to, $subject, $template, $context): void
+    {
         $email = (new TemplatedEmail())
-            ->from($this->getParameter('mailerFrom'))
+            ->from($this->mailerFrom)
             ->to($to)
             ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);
-        if ( $this->getParameter('sendBCC') ) {
-            $addresses = [$this->getParameter('mailerBCC')];
+        if ($this->sendBCC) {
+            $addresses = [$this->mailerBCC];
             foreach ($addresses as $address) {
                 $email->addBcc($address);
             }
@@ -158,26 +166,24 @@ class UploadController extends AbstractController
         $this->mailer->send($email);
     }
 
-    private function deleteDirectory($dir) {
+    private function deleteDirectory($dir): bool
+    {
         if (!file_exists($dir)) {
             return true;
         }
         if (!is_dir($dir)) {
             return unlink($dir);
         }
-    
+
         foreach (scandir($dir) as $item) {
             if ($item == '.' || $item == '..') {
                 continue;
             }
-            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            if (!$this->deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) {
                 return false;
             }
         }
-    
+
         return rmdir($dir);
     }
-
-
-
 }
