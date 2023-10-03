@@ -111,10 +111,9 @@ class UploadController extends AbstractController
         if ( null !== $directory ) {
             $fixedDirectory = str_replace('/','-', $directory);
             $registrationRootDir = $baseDir.'/'.$fixedDirectory;
-            if ( file_exists($registrationRootDir) ) {
-                $this->deleteDirectory($registrationRootDir);
+            if ( !file_exists($registrationRootDir) ) {
+                mkdir($registrationRootDir);
             }
-            mkdir($registrationRootDir);
             $finalDir = $registrationRootDir.'/'.$sha1;
         } else {
             $finalDir = $baseDir.'/'.$sha1;
