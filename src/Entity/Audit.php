@@ -3,8 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\AuditRepository;
+use App\Validator\RegistrationNumber;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 #[ORM\Entity(repositoryClass: AuditRepository::class)]
 class Audit
@@ -15,40 +18,40 @@ class Audit
     private $id;
 
     #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $createdAt = null;
+    private $createdAt;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $cif = null;
+    private $cif;
 
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
-    private ?string $organization = null;
+    private $organization;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $dni = null;
+    private $dni;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $name = null;
+    private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $file = null;
+    private $file;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $sha1 = null;
+    private $sha1;
 
     #[ORM\Column(type: 'bigint')]
-    private ?string $size = null;
+    private $size;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $senderEmail = null;
+    private $senderEmail;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $receiverEmail = null;
+    private $receiverEmail;
 
     #[ORM\Column(type: 'string', length: 1024)]
-    private ?string $issuer = null;
+    private $issuer;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $registrationNumber = null;
+    private $registrationNumber;
 
     public function getId(): ?int
     {
@@ -199,7 +202,7 @@ class Audit
         return $this;
     }
 
-    private function formatBytes($bytes, $precision = 2): string
+    private function formatBytes($bytes, $precision = 2) 
     {
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
         $bytes = max($bytes, 0);
@@ -207,34 +210,33 @@ class Audit
         $pow = min($pow, count($units) - 1);
         $bytes /= 1024 ** $pow;
 
-        return round($bytes, $precision).' '.$units[$pow];
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
-    public function getSizeFormated()
+    public function getSizeFormated() 
     {
         return $this->formatBytes($this->size);
     }
 
-    public function fill($giltzaUser): self
+    public function fill($giltzaUser) 
     {
-        $this->setCif(array_key_exists('cif', $giltzaUser) ? $giltzaUser['cif'] : null);
-        $this->setDni(array_key_exists('dni', $giltzaUser) ? $giltzaUser['dni'] : null);
-        $this->setName(array_key_exists('name', $giltzaUser) ? $giltzaUser['name'] : null);
-        $this->setOrganization(array_key_exists('organization', $giltzaUser) ? $giltzaUser['organization'] : null);
-        $this->setIssuer(array_key_exists('issuer', $giltzaUser) ? $giltzaUser['issuer'] : null);
-
+        $this->setCif(array_key_exists('cif',$giltzaUser)? $giltzaUser['cif']: null);
+        $this->setDni(array_key_exists('dni',$giltzaUser)? $giltzaUser['dni']: null);
+        $this->setName(array_key_exists('name',$giltzaUser)? $giltzaUser['name']: null);
+        $this->setOrganization(array_key_exists('organization',$giltzaUser)? $giltzaUser['organization']: null);
+        $this->setIssuer(array_key_exists('issuer',$giltzaUser)? $giltzaUser['issuer']: null);
         return $this;
     }
 
-    public function setFileData(UploadedFile $file): self
+    public function setFileData(UploadedFile $file) 
     {
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME).'.'.$file->getClientOriginalExtension();
-        $sha1 = sha1_file($file);
+        $sha1 = sha1_file($file); 
         $size = $file->getSize();
         $this->setSha1($sha1);
         $this->setSize($size);
         $this->setFile($fileName);
-
         return $this;
     }
 }
+

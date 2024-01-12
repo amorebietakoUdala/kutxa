@@ -28,3 +28,6 @@ php_errors.log
 .php-cs-fixer.cache
 rector.php.bak
 /tools/php-cs-fixer/vendor/
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

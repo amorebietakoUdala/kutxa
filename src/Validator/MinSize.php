@@ -7,7 +7,6 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 /**
  * @Annotation
- *
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
@@ -18,7 +17,7 @@ class MinSize extends Constraint
     final public const EMPTY_ERROR = '5d743385-9775-4aa5-8ff5-495fb1e60137';
     final public const TOO_SMALL_ERROR = 'df8637af-d466-48c6-a59d-e7126250a654';
 
-    protected const ERROR_NAMES = [
+    protected static $errorNames = [
         self::NOT_FOUND_ERROR => 'NOT_FOUND_ERROR',
         self::NOT_READABLE_ERROR => 'NOT_READABLE_ERROR',
         self::EMPTY_ERROR => 'EMPTY_ERROR',
@@ -33,18 +32,17 @@ class MinSize extends Constraint
 
     public $size;
     public $binaryFormat = true;
-    public $minSize;
-    public $minSizeNumber;
+    public $minSize = null;
+    public $minSizeNumber = null;
 
-    public function __construct($size, bool $binaryFormat = null, array $options = null, string $message = null, array $groups = null, $payload = null)
-    {
+    public function __construct($size, bool $binaryFormat = null, array $options = null, string $message = null, array $groups = null, $payload = null) {
         if (null !== $size && !\is_int($size) && !\is_string($size)) {
             throw new \TypeError(sprintf('"%s": Expected argument $size to be either null, an integer or a string, got "%s".', __METHOD__, get_debug_type($size)));
         }
         $this->size = $size;
         parent::__construct($options, $groups, $payload);
         $this->message = $message ?? $this->message;
-        $this->binaryFormat = $binaryFormat ?? $this->binaryFormat;
+        $this->binaryFormat = $binaryFormat ?? $this->binaryFormat;        
         if (null !== $this->size) {
             $this->normalizeBinaryFormat($this->size);
         }

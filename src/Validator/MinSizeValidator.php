@@ -2,10 +2,10 @@
 
 namespace App\Validator;
 
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
@@ -23,19 +23,19 @@ class MinSizeValidator extends ConstraintValidator
         self::KIB_BYTES => 'KiB',
         self::MIB_BYTES => 'MiB',
     ];
-
-    public function validate($value, Constraint $constraint): void
+    public function validate($value, Constraint $constraint)
     {
+
         if (!$constraint instanceof MinSize) {
             throw new UnexpectedTypeException($constraint, MinSize::class);
         }
 
-        /* @var App\Validator\MinSize $constraint */
+        /** @var MinSize $constraint */
 
         if (null === $value || '' === $value) {
             return;
         }
-
+        
         if ($value instanceof UploadedFile && !$value->isValid()) {
             switch ($value->getError()) {
                 case \UPLOAD_ERR_INI_SIZE:
