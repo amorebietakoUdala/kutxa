@@ -138,7 +138,6 @@ class GiltzaProvider extends AbstractProvider
     /**
      * Verifies that all required options have been passed.
      *
-     * @param  array $options
      * @return void
      * @throws InvalidArgumentException
      */

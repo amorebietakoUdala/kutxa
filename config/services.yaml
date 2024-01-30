@@ -30,6 +30,7 @@ services:
         bind:
             $downloadUri: '%downloadUri%'
 
+
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
@@ -41,9 +42,3 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-
-    # Custom monolog formatter to ignore context and extra fields in log line
-    monolog.formatter.custom_line:
-        class: Monolog\Formatter\LineFormatter
-        arguments:
-            $format: "[%%datetime%%] %%channel%%.%%level_name%%: %%message%%\n"

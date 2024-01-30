@@ -11,10 +11,10 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class MinSizeValidator extends ConstraintValidator
 {
-    public const KB_BYTES = 1000;
-    public const MB_BYTES = 1000000;
-    public const KIB_BYTES = 1024;
-    public const MIB_BYTES = 1048576;
+    final public const KB_BYTES = 1000;
+    final public const MB_BYTES = 1_000_000;
+    final public const KIB_BYTES = 1024;
+    final public const MIB_BYTES = 1_048_576;
 
     private const SUFFICES = [
         1 => 'bytes',
@@ -30,7 +30,7 @@ class MinSizeValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, MinSize::class);
         }
 
-        /** @var App\Validator\MinSize $constraint */
+        /** @var MinSize $constraint */
 
         if (null === $value || '' === $value) {
             return;
@@ -126,7 +126,7 @@ class MinSizeValidator extends ConstraintValidator
         }
 
         $sizeInBytes = filesize($path);
-        $basename = $value instanceof UploadedFile ? $value->getClientOriginalName() : basename($path);
+        $basename = $value instanceof UploadedFile ? $value->getClientOriginalName() : basename((string) $path);
 
         if (0 === $sizeInBytes) {
             $this->context->buildViolation($constraint->disallowEmptyMessage)

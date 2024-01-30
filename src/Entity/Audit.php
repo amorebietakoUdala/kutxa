@@ -9,76 +9,48 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-/**
- * @ORM\Entity(repositoryClass=AuditRepository::class)
- */
+#[ORM\Entity(repositoryClass: AuditRepository::class)]
 class Audit
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $cif;
 
-    /**
-     * @ORM\Column(type="string", length=1024, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
     private $organization;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $dni;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $file;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $sha1;
 
-    /**
-     * @ORM\Column(type="bigint")
-     */
+    #[ORM\Column(type: 'bigint')]
     private $size;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $senderEmail;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $receiverEmail;
 
-    /**
-     * @ORM\Column(type="string", length=1024)
-     */
+    #[ORM\Column(type: 'string', length: 1024)]
     private $issuer;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $registrationNumber;
 
     public function getId(): ?int
@@ -232,11 +204,11 @@ class Audit
 
     private function formatBytes($bytes, $precision = 2) 
     {
-        $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB');
+        $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
-        $bytes /= pow(1024, $pow);
+        $bytes /= 1024 ** $pow;
 
         return round($bytes, $precision) . ' ' . $units[$pow];
     }

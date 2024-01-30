@@ -6,7 +6,6 @@ use App\Entity\Audit;
 use App\Form\UploadType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -20,21 +19,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UploadController extends AbstractController
 {
  
-    private MailerInterface $mailer;
-    private TranslatorInterface $translator;
-    private EntityManagerInterface $em;
-    private string $downloadUri;
+    public function __construct(
+        private readonly MailerInterface $mailer, 
+        private readonly TranslatorInterface $translator, 
+        private readonly EntityManagerInterface $em, 
+        private readonly string $downloadUri = '/uploads'
+    )
+    {}
 
-    public function __construct(MailerInterface $mailer, TranslatorInterface $translator, LoggerInterface $auditLogger, EntityManagerInterface $em, string $downloadUri = '/uploads') {
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->em = $em;
-        $this->downloadUri = $downloadUri;
-    }
-
-    /**
-     * @Route("/{_locale}/erregistro", name="app_register")
-     */
+    #[Route(path: '/{_locale}/erregistro', name: 'app_register')]
     public function upload(Request $request): Response
     {
         if ( $request->getSession()->get('giltzaUser') === null ) {
@@ -49,13 +42,13 @@ class UploadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Audit $data */
             $data = $form->getData();
-            if ( strpos($data->getReceiverEmail(), $this->getParameter('receiverDomain')) === false ) {
+            if ( !str_contains($data->getReceiverEmail(), $this->getParameter('receiverDomain')) ) {
                 $message = $this->translator->trans('message.domainNotAllowed', [
                     'receiverDomain' => $this->getParameter('receiverDomain'),
                 ]);
                 $this->addFlash('error', $message);
                 return $this->render('kutxa/upload.html.twig',[
-                    'form' => $form->createView(),
+                    'form' => $form,
                     'maxFileSize' => $this->getParameter('maxFileSize'),
                     'minFileSize' => $this->getParameter('minFileSize'),
                 ]);                
@@ -78,7 +71,7 @@ class UploadController extends AbstractController
         }
 
         return $this->render('kutxa/upload.html.twig',[
-            'form' => $form->createView(),
+            'form' => $form,
             'maxFileSize' => $this->getParameter('maxFileSize'),
             'minFileSize' => $this->getParameter('minFileSize'),
         ]);
@@ -109,7 +102,7 @@ class UploadController extends AbstractController
             mkdir($baseDir);
         }
         if ( null !== $directory ) {
-            $fixedDirectory = str_replace('/','-', $directory);
+            $fixedDirectory = str_replace('/','-', (string) $directory);
             $registrationRootDir = $baseDir.'/'.$fixedDirectory;
             if ( !file_exists($registrationRootDir) ) {
                 mkdir($registrationRootDir);
@@ -130,13 +123,11 @@ class UploadController extends AbstractController
         if ($this->getParameter('sendMessagesReceiver')) {
             $template = 'kutxa/fileReceptionEmailReceiver.html.twig';
             $subject = $this->translator->trans('message.emailSubjectReceiver');
-//            $html = $this->renderView('kutxa/fileReceptionEmailReceiver.html.twig', $context);
             $this->sendEmail($data->getReceiverEmail(), $subject, $template, $context);
         }
         if ($this->getParameter('sendMessagesSender')) {
             $template = 'kutxa/fileReceptionEmailSender.html.twig';
             $subject = $this->translator->trans('message.emailSubjectSender');
-//            $html = $this->renderView('kutxa/fileReceptionEmailSender.html.twig', $context);
             $this->sendEmail($data->getSenderEmail(), $subject, $template, $context);
         }
     }

@@ -9,13 +9,13 @@ class RegistrationNumberValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        /** @var App\Validator\RegistrationNumber $constraint */
+        /** @var RegistrationNumber $constraint */
 
         if (null === $value || '' === $value) {
             return;
         }
 
-        if ( preg_match('/^\d+\/\d+$/', $value) ) {
+        if ( preg_match('/^\d+\/\d+$/', (string) $value) ) {
             return;
         }
 
