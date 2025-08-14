@@ -40,7 +40,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["core-js", "npm:3.35.1"],\
             ["file-loader", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.2.0"],\
             ["intl-messageformat", "npm:10.5.11"],\
-            ["sweetalert2", "npm:11.10.4"],\
+            ["sweetalert2", "npm:11.22.4"],\
             ["webpack", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.95.0"],\
             ["webpack-cli", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:4.10.0"],\
             ["webpack-notifier", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:1.15.0"]\
@@ -5977,7 +5977,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["core-js", "npm:3.35.1"],\
             ["file-loader", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.2.0"],\
             ["intl-messageformat", "npm:10.5.11"],\
-            ["sweetalert2", "npm:11.10.4"],\
+            ["sweetalert2", "npm:11.22.4"],\
             ["webpack", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.95.0"],\
             ["webpack-cli", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:4.10.0"],\
             ["webpack-notifier", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:1.15.0"]\
@@ -6251,10 +6251,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["sweetalert2", [\
-        ["npm:11.10.4", {\
-          "packageLocation": "./.yarn/cache/sweetalert2-npm-11.10.4-4288b5f106-2e3d7a8976.zip/node_modules/sweetalert2/",\
+        ["npm:11.22.4", {\
+          "packageLocation": "./.yarn/cache/sweetalert2-npm-11.22.4-3980223962-2d9072f530.zip/node_modules/sweetalert2/",\
           "packageDependencies": [\
-            ["sweetalert2", "npm:11.10.4"]\
+            ["sweetalert2", "npm:11.22.4"]\
           ],\
           "linkType": "HARD"\
         }]\
