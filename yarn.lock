@@ -4002,7 +4002,7 @@ __metadata:
     core-js: ^3.26.1
     file-loader: ^6.2.0
     intl-messageformat: ^10.5.8
-    sweetalert2: ^11.7.27
+    sweetalert2: ^11.22.4
     webpack: ^5.76.0
     webpack-cli: ^4.9.2
     webpack-notifier: ^1.6.0
@@ -4233,10 +4233,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sweetalert2@npm:^11.7.27":
-  version: 11.10.4
-  resolution: "sweetalert2@npm:11.10.4"
-  checksum: 2e3d7a8976134c1f3a126e6ff102d1cc41e2a69386133fae0f490f7e2a47d0a0d1cc19003b5c9ca5f8bed54f4578e6f03cb0a3cacc52a7ed9eb5183ea7467619
+"sweetalert2@npm:^11.22.4":
+  version: 11.22.4
+  resolution: "sweetalert2@npm:11.22.4"
+  checksum: 2d9072f53002de082a5d290133e0f485b5e405d9e6b53d043fee74db395a508510131e5e3e68e0c7528fea773383098f552a473d117a0123a4eaec8a604bbe9d
   languageName: node
   linkType: hard
 
